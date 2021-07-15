@@ -1,9 +1,20 @@
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
+
 
 public class WallaRobot extends BaseRobot{
 
     public WallaRobot(String rootWebsiteUrl) {
         super(rootWebsiteUrl);
+        this.setRootWebsiteUrl();
+
+
     }
 
     @Override
@@ -17,8 +28,9 @@ public class WallaRobot extends BaseRobot{
     }
 
     @Override
-    public Map<String, Integer> getWordsStatistics() {
-        return null;
+    public Map<String, Integer> getWordsStatistics() throws IOException {
+        Map<String,Integer> map = new HashMap<String, Integer>();
+        return map;
     }
 
     @Override
@@ -30,4 +42,11 @@ public class WallaRobot extends BaseRobot{
     public String getLongestArticleTitle() {
         return null;
     }
+
+
+
+
+
+
+
 }
