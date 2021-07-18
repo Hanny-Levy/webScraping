@@ -4,16 +4,19 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 
 public class WallaRobot extends BaseRobot{
+    private ArrayList<String> url;
 
-    public WallaRobot(String rootWebsiteUrl) {
+    public WallaRobot(String rootWebsiteUrl) throws IOException {
         super(rootWebsiteUrl);
+        url=new ArrayList<String>();
         this.setRootWebsiteUrl();
-
+        this.setUrl();
 
     }
 
@@ -43,10 +46,31 @@ public class WallaRobot extends BaseRobot{
         return null;
     }
 
+    public void setUrl() throws IOException {
+        String articleUrl;
+        Document walla = Jsoup.connect(this.getRootWebsiteUrl()).get();
+        Elements articles = walla.getElementsByClass("with-roof with-timer");
+        articleUrl=articles.get(0).child(0).attr("href");
+        this.url.add(articleUrl);
+
+        articles = walla.getElementsByTag("li");
+        for (int i=104; i<164;i++){
+            articleUrl=articles.get(i).child(0).attr("href");
+            this.url.add(articleUrl);
+        }
+
+
+
+    }
 
 
 
 
 
-
+    public void getUrl() {
+        for (int i=0 ; i<url.size();i++) {
+            System.out.println(url.get(i));
+        }
+        //return url;
+    }
 }

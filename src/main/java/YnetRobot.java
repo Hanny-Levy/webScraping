@@ -43,21 +43,21 @@ public class YnetRobot extends BaseRobot{
     public void setUrl() throws IOException {
         String mainArticle;
         String minorArticle;
-        Document site = Jsoup.connect(this.getRootWebsiteUrl()).get();
-        Elements mainArticleClass=site.getElementsByClass("slotSubTitle");
+        Document ynet = Jsoup.connect(this.getRootWebsiteUrl()).get();
+        Elements mainArticleClass=ynet.getElementsByClass("slotSubTitle");
         mainArticle=mainArticleClass.get(0).child(0).attr("href");
         this.url.add(mainArticle);
-        Elements minorArticles = site.getElementsByClass("textDiv");
+        Elements minorArticles = ynet.getElementsByClass("textDiv");
         for (int i=1 ; i<4;i++){
           minorArticle=minorArticles.get(i).child(0).attr("href");
           this.url.add(minorArticle);
         }
-        minorArticles=site.getElementsByClass("slotTitle medium");
+        minorArticles=ynet.getElementsByClass("slotTitle medium");
         for (int i=4; i<6;i++){
         minorArticle=minorArticles.get(i).child(0).attr("href");
             this.url.add(minorArticle);
         }
-        minorArticles=site.getElementsByClass("slotTitle small");
+        minorArticles=ynet.getElementsByClass("slotTitle small");
         for (int i=0 ; i<8;i++){
             minorArticle=minorArticles.get(i).child(0).attr("href");
             this.url.add(minorArticle);
@@ -65,7 +65,10 @@ public class YnetRobot extends BaseRobot{
 
     }
 
-    public ArrayList<String> getUrl() {
-        return url;
+    public void getUrl() {
+        for (int i=0 ; i<url.size();i++) {
+            System.out.println(url.get(i));
+        }
+       // return url;
     }
 }
