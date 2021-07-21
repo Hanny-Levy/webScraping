@@ -39,8 +39,27 @@ public class MakoRobot extends BaseRobot{
     }
 
     @Override
-    public String getLongestArticleTitle() {
-        return null;
+    public String getLongestArticleTitle() throws IOException {
+        int max=0;
+        String paragraphs="";
+        String title="";
+       for (int articleIndex = 0; articleIndex < this.url.size(); articleIndex++) {
+            Document article = Jsoup.connect(this.url.get(articleIndex)).get();
+            Elements titleArticle=article.getElementsByTag("h1");
+            Elements bodyArticle=article.getElementsByTag("p");
+            for (int i=0 ; i<bodyArticle.size()-1; i++)
+               paragraphs += bodyArticle.get(0).text();
+
+           if (max<paragraphs.length()){
+               max=paragraphs.length();
+               title=titleArticle.get(0).text();
+            }
+           paragraphs="";
+
+
+       }
+        return title;
+
     }
 
     public void setUrl() throws IOException {
@@ -64,7 +83,7 @@ public class MakoRobot extends BaseRobot{
 
     }
 
-    public void getUrl() {
+    public void printUrl() {
         for (int i=0 ; i<url.size();i++) {
             System.out.println(url.get(i));
         }

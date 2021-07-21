@@ -1,17 +1,19 @@
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class YnetRobot extends BaseRobot{
-    private ArrayList <String> url;
+public class YnetRobot extends BaseRobot {
+    private ArrayList<String> url;
+
     public YnetRobot(String rootWebsiteUrl) throws IOException {
         super(rootWebsiteUrl);
         setRootWebsiteUrl();
-        url=new ArrayList<String>();
+        url = new ArrayList<String>();
         this.setUrl();
     }
 
@@ -27,6 +29,7 @@ public class YnetRobot extends BaseRobot{
 
     @Override
     public Map<String, Integer> getWordsStatistics() {
+
         return null;
     }
 
@@ -36,39 +39,53 @@ public class YnetRobot extends BaseRobot{
     }
 
     @Override
-    public String getLongestArticleTitle() {
-        return null;
+    public String getLongestArticleTitle() throws IOException {
+        int max=0;
+        String paragraphs="";
+        String title="";
+        for (int articleIndex = 0; articleIndex < this.url.size(); articleIndex++) {
+            Document article = Jsoup.connect(this.url.get(articleIndex)).get();
+            Elements titleArticle = article.getElementsByClass("mainTitle");
+            Elements bodyArticle=article.getElementsByAttribute("data-text");
+            for (int i=0 ; i<bodyArticle.size()-1 ; i++)
+            paragraphs += bodyArticle.get(i).text();
+
+            if (max<paragraphs.length()){
+                max=paragraphs.length();
+                title = titleArticle.text();
+            }
+            paragraphs="";
+        }
+        return title;
+
     }
+
 
     public void setUrl() throws IOException {
-        String mainArticle;
-        String minorArticle;
+
+        String articleUrl;
         Document ynet = Jsoup.connect(this.getRootWebsiteUrl()).get();
-        Elements mainArticleClass=ynet.getElementsByClass("slotSubTitle");
-        mainArticle=mainArticleClass.get(0).child(0).attr("href");
-        this.url.add(mainArticle);
-        Elements minorArticles = ynet.getElementsByClass("textDiv");
-        for (int i=1 ; i<4;i++){
-          minorArticle=minorArticles.get(i).child(0).attr("href");
-          this.url.add(minorArticle);
+        Elements articlesClass = ynet.getElementsByClass("textDiv");
+        for (int i=0 ; i<4;i++){
+            articleUrl=articlesClass.get(i).child(0).attr("href");
+          this.url.add(articleUrl);
         }
-        minorArticles=ynet.getElementsByClass("slotTitle medium");
+        articlesClass=ynet.getElementsByClass("slotTitle medium");
         for (int i=4; i<6;i++){
-        minorArticle=minorArticles.get(i).child(0).attr("href");
-            this.url.add(minorArticle);
+            articleUrl=articlesClass.get(i).child(0).attr("href");
+            this.url.add(articleUrl);
         }
-        minorArticles=ynet.getElementsByClass("slotTitle small");
+        articlesClass=ynet.getElementsByClass("slotTitle small");
         for (int i=0 ; i<8;i++){
-            minorArticle=minorArticles.get(i).child(0).attr("href");
-            this.url.add(minorArticle);
+            articleUrl=articlesClass.get(i).child(0).attr("href");
+            this.url.add(articleUrl);
         }
 
     }
 
-    public void getUrl() {
+    public void printUrl() {
         for (int i=0 ; i<url.size();i++) {
             System.out.println(url.get(i));
         }
-       // return url;
     }
 }
