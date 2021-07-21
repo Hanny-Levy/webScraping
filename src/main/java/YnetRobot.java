@@ -1,10 +1,10 @@
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 public class YnetRobot extends BaseRobot {
@@ -15,6 +15,7 @@ public class YnetRobot extends BaseRobot {
         setRootWebsiteUrl();
         url = new ArrayList<String>();
         this.setUrl();
+        this.getLongestArticleTitle();
     }
 
     @Override
@@ -28,8 +29,16 @@ public class YnetRobot extends BaseRobot {
     }
 
     @Override
-    public Map<String, Integer> getWordsStatistics() {
+    public Map<String, Integer> getWordsStatistics() throws IOException {
+        Map<String, Integer> map = new HashMap<String, Integer>();
+        for (int articleIndex=0 ; articleIndex<this.url.size();articleIndex++){
+            Document article = Jsoup.connect(this.url.get(articleIndex)).get();
+            String word;
+            int count;
 
+
+
+        }
         return null;
     }
 
@@ -41,22 +50,20 @@ public class YnetRobot extends BaseRobot {
     @Override
     public String getLongestArticleTitle() throws IOException {
         int max=0;
-        String paragraphs="";
-        String title="";
+        Article article = new Article();
         for (int articleIndex = 0; articleIndex < this.url.size(); articleIndex++) {
-            Document article = Jsoup.connect(this.url.get(articleIndex)).get();
-            Elements titleArticle = article.getElementsByClass("mainTitle");
-            Elements bodyArticle=article.getElementsByAttribute("data-text");
-            for (int i=0 ; i<bodyArticle.size()-1 ; i++)
-            paragraphs += bodyArticle.get(i).text();
-
-            if (max<paragraphs.length()){
-                max=paragraphs.length();
-                title = titleArticle.text();
+            Document connectArticle = Jsoup.connect(this.url.get(articleIndex)).get();
+            Elements titleClass = connectArticle.getElementsByClass("mainTitle");
+            Elements textKey=connectArticle.getElementsByAttribute("data-text");
+            article.setText(textKey);
+            if (max<article.getText().length()){
+                max=article.getText().length();
+                article.setTitle(titleClass);
             }
-            paragraphs="";
+            article.resetText();
         }
-        return title;
+
+        return article.getTitle();
 
     }
 
@@ -87,5 +94,9 @@ public class YnetRobot extends BaseRobot {
         for (int i=0 ; i<url.size();i++) {
             System.out.println(url.get(i));
         }
+    }
+
+    public ArrayList<String> getUrl() {
+        return url;
     }
 }

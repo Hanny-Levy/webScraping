@@ -7,8 +7,8 @@ import java.util.Set;
 public class Main {
     public static void main(String[] args) throws IOException {
        YnetRobot ynetRobot = new YnetRobot("");
-       MakoRobot makoRobot=new MakoRobot("");
-       WallaRobot wallaRobot=new WallaRobot("");
+      // MakoRobot makoRobot=new MakoRobot("");
+      // WallaRobot wallaRobot=new WallaRobot("");
 
 
     }

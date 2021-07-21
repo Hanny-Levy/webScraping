@@ -45,27 +45,26 @@ public class WallaRobot extends BaseRobot{
     @Override
     public String getLongestArticleTitle() throws IOException {
         int max=0;
-        String paragraphs="";
-        String title="";
+        Article article = new Article();
         for (int articleIndex = 0; articleIndex < this.url.size(); articleIndex++) {
-            Document article = Jsoup.connect(this.url.get(articleIndex)).get();
-            Elements titleArticle=article.getElementsByTag("h1");
-            Elements bodyArticle=article.getElementsByTag("p");
-            for (int i=0 ; i<bodyArticle.size()-1; i++)
-                paragraphs += bodyArticle.get(0).text();
-
-            if (max<paragraphs.length()){
-                max=paragraphs.length();
-                title=titleArticle.get(0).text();
+            Document connectArticle = Jsoup.connect(this.url.get(articleIndex)).get();
+            Elements titleTag=connectArticle.getElementsByTag("h1");
+            Elements textTag=connectArticle.getElementsByTag("p");
+            article.setText(textTag);
+            if (max<article.getText().length()){
+                max=article.getText().length();
+                article.setTitle(titleTag);
             }
-            paragraphs="";
-
+            article.resetText();
+        }
+        System.out.println(article.getTitle());
+        return article.getTitle();
 
         }
-        return title;
 
 
-    }
+
+
 
     public void setUrl() throws IOException {
         String articleUrl;
@@ -74,7 +73,7 @@ public class WallaRobot extends BaseRobot{
         articleUrl = articles.get(0).child(0).attr("href");
         this.url.add(articleUrl);
          articles = walla.getElementsByTag("li");
-         for (int i=104; i<124;i++){ //
+         for (int i=104; i<124;i++){
              articleUrl=articles.get(i).child(0).attr("href");
              this.url.add(articleUrl);
          }

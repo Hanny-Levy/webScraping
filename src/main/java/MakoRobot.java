@@ -1,6 +1,5 @@
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
@@ -41,24 +40,20 @@ public class MakoRobot extends BaseRobot{
     @Override
     public String getLongestArticleTitle() throws IOException {
         int max=0;
-        String paragraphs="";
-        String title="";
+        Article article = new Article();
        for (int articleIndex = 0; articleIndex < this.url.size(); articleIndex++) {
-            Document article = Jsoup.connect(this.url.get(articleIndex)).get();
-            Elements titleArticle=article.getElementsByTag("h1");
-            Elements bodyArticle=article.getElementsByTag("p");
-            for (int i=0 ; i<bodyArticle.size()-1; i++)
-               paragraphs += bodyArticle.get(0).text();
-
-           if (max<paragraphs.length()){
-               max=paragraphs.length();
-               title=titleArticle.get(0).text();
-            }
-           paragraphs="";
-
-
+            Document connectArticle = Jsoup.connect(this.url.get(articleIndex)).get();
+            Elements titleTag=connectArticle.getElementsByTag("h1");
+            Elements textTag=connectArticle.getElementsByTag("p");
+           article.setText(textTag);
+           if (max<article.getText().length()){
+               max=article.getText().length();
+               article.setTitle(titleTag);
+           }
+           article.resetText();
        }
-        return title;
+
+        return article.getTitle();
 
     }
 
