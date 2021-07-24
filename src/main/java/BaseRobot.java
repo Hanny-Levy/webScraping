@@ -18,7 +18,7 @@ public abstract class BaseRobot {
 
     public abstract Map<String, Integer> getWordsStatistics() throws IOException;
 
-    public abstract int countInArticlesTitles(String text);
+    public abstract int countInArticlesTitles(String text) throws IOException;
 
     public abstract String getLongestArticleTitle() throws IOException;
 

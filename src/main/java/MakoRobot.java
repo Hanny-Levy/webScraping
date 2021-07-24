@@ -4,15 +4,18 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
-public class MakoRobot extends BaseRobot{
+public class MakoRobot extends BaseRobot implements Mapping{
     private ArrayList<String> url;
+    private Map<String, Integer> map;
 
     public MakoRobot(String rootWebsiteUrl) throws IOException {
         super(rootWebsiteUrl);
         this.setRootWebsiteUrl();
-        url=new ArrayList<String>();
+        this.url=new ArrayList<String>();
+        this.map = new HashMap<String, Integer>();
         this.setUrl();
 
     }
@@ -28,13 +31,35 @@ public class MakoRobot extends BaseRobot{
     }
 
     @Override
-    public Map<String, Integer> getWordsStatistics() {
-        return null;
+    public Map<String, Integer> getWordsStatistics() throws IOException {
+        for (int articleIndex=0 ; articleIndex<this.url.size();articleIndex++){
+            Document connectArticle = Jsoup.connect(this.url.get(articleIndex)).get();
+            Elements titleTag=connectArticle.getElementsByTag("h1");
+            Elements subTitleTag=connectArticle.getElementsByTag("h2");
+            Elements textTag=connectArticle.getElementsByTag("p");
+            Article article = new Article(titleTag,subTitleTag,textTag);
+            String articleText=article.getTitle()+article.getSubtitle()+article.getText();
+            this.map= getWordsIntoMap(articleText,this.map);
+        }
+        return this.map;
     }
 
     @Override
-    public int countInArticlesTitles(String text) {
-        return 0;
+    public int countInArticlesTitles(String text) throws IOException {
+        int count=0;
+        for (int articleIndex=0 ; articleIndex<this.url.size();articleIndex++) {
+            Document connectArticle = Jsoup.connect(this.url.get(articleIndex)).get();
+            Elements titleTag=connectArticle.getElementsByTag("h1");
+        Elements subTitleTag=connectArticle.getElementsByTag("h2");
+        Elements textTag=connectArticle.getElementsByTag("p");
+        Article article = new Article(titleTag,subTitleTag,textTag);
+        String articleText=article.getTitle()+article.getSubtitle();
+            this.map=getWordsIntoMap(articleText,this.map);
+}
+        if (this.map.containsKey(text)){
+                count=this.map.get(text);
+                }
+                return count;
     }
 
     @Override
@@ -78,10 +103,17 @@ public class MakoRobot extends BaseRobot{
 
     }
 
+    public ArrayList<String> getUrl() {
+        return url;
+    }
+
+    public Map<String, Integer> getMap() {
+        return map;
+    }
+
     public void printUrl() {
         for (int i=0 ; i<url.size();i++) {
             System.out.println(url.get(i));
         }
-        //return url;
     }
 }

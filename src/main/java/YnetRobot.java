@@ -7,15 +7,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class YnetRobot extends BaseRobot {
+public class YnetRobot extends BaseRobot implements Mapping {
     private ArrayList<String> url;
+    private Map<String, Integer> map;
 
     public YnetRobot(String rootWebsiteUrl) throws IOException {
         super(rootWebsiteUrl);
-        setRootWebsiteUrl();
-        url = new ArrayList<String>();
+        this.setRootWebsiteUrl();
+        this.url = new ArrayList<String>();
+        this.map = new HashMap<String, Integer>();
         this.setUrl();
-        this.getLongestArticleTitle();
+
     }
 
     @Override
@@ -30,21 +32,36 @@ public class YnetRobot extends BaseRobot {
 
     @Override
     public Map<String, Integer> getWordsStatistics() throws IOException {
-        Map<String, Integer> map = new HashMap<String, Integer>();
         for (int articleIndex=0 ; articleIndex<this.url.size();articleIndex++){
-            Document article = Jsoup.connect(this.url.get(articleIndex)).get();
-            String word;
-            int count;
-
-
-
+            Document connectArticle = Jsoup.connect(this.url.get(articleIndex)).get();
+            Elements titleClass = connectArticle.getElementsByClass("mainTitle");
+            Elements subTitleClass = connectArticle.getElementsByClass("subTitle");
+            Elements textKey=connectArticle.getElementsByAttribute("data-text");
+            Article article = new Article(titleClass,subTitleClass,textKey);
+            String articleText=article.getTitle()+article.getSubtitle()+article.getText();
+            this.map= getWordsIntoMap(articleText,this.map);
         }
-        return null;
+
+        return this.map;
     }
 
     @Override
-    public int countInArticlesTitles(String text) {
-        return 0;
+    public int countInArticlesTitles(String text) throws IOException {
+         int count=0;
+        for (int articleIndex=0 ; articleIndex<this.url.size();articleIndex++) {
+            Document connectArticle = Jsoup.connect(this.url.get(articleIndex)).get();
+            Elements titleClass = connectArticle.getElementsByClass("mainTitle");
+            Elements subTitleClass = connectArticle.getElementsByClass("subTitle");
+            Elements textKey=connectArticle.getElementsByAttribute("data-text");
+            Article article = new Article(titleClass,subTitleClass,textKey);
+            String articleText=article.getTitle()+article.getSubtitle();
+            this.map=getWordsIntoMap(articleText,this.map);
+        }
+        if (this.map.containsKey(text)){
+            count=this.map.get(text);
+        }
+
+        return count;
     }
 
     @Override
@@ -88,6 +105,10 @@ public class YnetRobot extends BaseRobot {
             this.url.add(articleUrl);
         }
 
+    }
+
+    public Map<String, Integer> getMap() {
+        return map;
     }
 
     public void printUrl() {
