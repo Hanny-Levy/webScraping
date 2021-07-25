@@ -13,7 +13,6 @@ public class GuessingGame {
 
             }
 
-
         }
 
     private Scanner intScanner ;
@@ -49,7 +48,7 @@ public class GuessingGame {
                     case Def.MAKO: {
                         this.setMakoRobot();
                         System.out.println("Welcome to Mako");
-                        System.out.println("Out longest article's title is: ");
+                        System.out.println("Our longest article's title is: ");
                         System.out.println(this.makoRobot.getLongestArticleTitle());
 
                     }
