@@ -56,7 +56,7 @@ public class GuessingGame {
                     case Def.WALLA: {
                         this.setWallaRobot();
                         System.out.println("Welcome to Walla");
-                        System.out.println("Out longest article's title is: ");
+                        System.out.println("Our longest article's title is: ");
                         System.out.println(this.wallaRobot.getLongestArticleTitle());
 
                     }
@@ -64,7 +64,7 @@ public class GuessingGame {
                     case Def.YNET: {
                         this.setYnetRobot();
                         System.out.println("Welcome to Ynet");
-                        System.out.println("Out longest article's title is: ");
+                        System.out.println("Our longest article's title is: ");
                         System.out.println(this.ynetRobot.getLongestArticleTitle());
                     }
                     break;
